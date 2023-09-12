@@ -49,6 +49,8 @@ class HotFuzz(QMainWindow):
     def __init__(self, screen_size, options, output_buffer):
         super().__init__()
 
+        self.setCursor(Qt.CursorShape.BlankCursor)
+
         self.prompt_text = ""
 
         self.output_buffer = output_buffer
