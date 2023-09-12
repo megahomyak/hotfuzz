@@ -226,7 +226,7 @@ class HotFuzz(QMainWindow):
                 self.prompt_text += character.lower()
                 self.show_results()
 
-def run(options):
+def run(options: List[Option[T]]) -> Option[T]:
     output_buffer = [None]
     app = QApplication(sys.argv)
     window = HotFuzz(app.screens()[0].size(), options, output_buffer)
