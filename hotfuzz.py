@@ -1,4 +1,4 @@
-from typing import Generic, List, TypeVar, Union
+from typing import Generic, List, Optional, TypeVar, Union
 from PyQt6.QtGui import QFont, QFontDatabase, QFontMetrics, QPainter, QColor
 from PyQt6.QtWidgets import QMainWindow, QApplication, QLabel
 from PyQt6.QtCore import QTimer, Qt
@@ -226,7 +226,7 @@ class HotFuzz(QMainWindow):
                 self.prompt_text += character.lower()
                 self.show_results()
 
-def run(options: List[Option[T]]) -> Option[T]:
+def run(options: List[Option[T]]) -> Optional[Option[T]]:
     output_buffer = [None]
     app = QApplication(sys.argv)
     window = HotFuzz(app.screens()[0].size(), options, output_buffer)
