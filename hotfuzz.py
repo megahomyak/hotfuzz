@@ -2,6 +2,9 @@ from PyQt6.QtGui import QFont, QFontDatabase, QPainter, QColor
 from PyQt6.QtWidgets import QMainWindow, QApplication, QLabel
 from PyQt6.QtCore import Qt
 import sys
+import re
+
+LAST_WORD = re.compile(r"\w+\s*$", flags=re.UNICODE)
 
 class HotFuzz(QMainWindow):
     def __init__(self, screen_size):
@@ -18,10 +21,11 @@ class HotFuzz(QMainWindow):
 
         self.screen_size = screen_size
 
-        self.set_prompt_text("> ")
+        self.update_results("")
 
-    def set_prompt_text(self, text):
-        self.prompt.setText(text)
+    def update_results(self, text):
+        self.prompt_text = text
+        self.prompt.setText("> " + self.prompt_text)
 
         self.prompt.adjustSize()
         prompt_x = (self.screen_size.width() - self.prompt.width()) // 2
@@ -38,9 +42,17 @@ class HotFuzz(QMainWindow):
     def keyPressEvent(self, event) -> None:
         if event.key() == Qt.Key.Key_Escape:
             self.close()
-        character = event.text()
-        if character not in ("\n", "\r", ""):
-            self.set_prompt_text(self.prompt.text() + character)
+        elif event.key() == Qt.Key.Key_Backspace:
+            modifiers = QApplication.keyboardModifiers()
+            if Qt.KeyboardModifier.ControlModifier in modifiers:
+                result = LAST_WORD.sub("", self.prompt_text)
+            else:
+                result = self.prompt_text[:-1]
+            self.update_results(result)
+        else:
+            character = event.text()
+            if character not in ("\n", "\r", ""):
+                self.update_results(self.prompt_text + character)
 
 app = QApplication(sys.argv)
 window = HotFuzz(app.screens()[0].size())
