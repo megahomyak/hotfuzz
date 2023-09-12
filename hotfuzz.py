@@ -11,14 +11,21 @@ class HotFuzz(QMainWindow):
         self.setStyleSheet("background-color: transparent;")
 
         QFontDatabase.addApplicationFont("Fixedsys.ttf")
-        font = QFont("Fixedsys Excelsior 3.01")
+        font = QFont("Fixedsys Excelsior 3.01", pointSize=30)
 
         self.prompt = QLabel(self)
         self.prompt.setFont(font)
-        self.prompt.setText("blah")
+
+        self.screen_size = screen_size
+
+        self.set_prompt_text("> ")
+
+    def set_prompt_text(self, text):
+        self.prompt.setText(text)
+
         self.prompt.adjustSize()
-        prompt_x = (screen_size.width() - self.prompt.width()) // 2
-        prompt_y = (screen_size.height() - self.prompt.height()) // 2
+        prompt_x = (self.screen_size.width() - self.prompt.width()) // 2
+        prompt_y = (self.screen_size.height() - self.prompt.height()) // 10
 
         self.prompt.move(prompt_x, prompt_y)
 
@@ -31,6 +38,9 @@ class HotFuzz(QMainWindow):
     def keyPressEvent(self, event) -> None:
         if event.key() == Qt.Key.Key_Escape:
             self.close()
+        character = event.text()
+        if character not in ("\n", "\r", ""):
+            self.set_prompt_text(self.prompt.text() + character)
 
 app = QApplication(sys.argv)
 window = HotFuzz(app.screens()[0].size())
