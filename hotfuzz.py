@@ -49,6 +49,8 @@ class HotFuzz(QMainWindow):
     def __init__(self, screen_size, options, output_buffer):
         super().__init__()
 
+        self.prompt_text = ""
+
         self.output_buffer = output_buffer
         self.screen_size = screen_size
         self.options_hotkeys = {}
@@ -62,11 +64,11 @@ class HotFuzz(QMainWindow):
                     for character in part.characters:
                         character = character.lower()
                         chain.append(character)
-                        if character in base_dict:
+                        if "end" in base_dict:
                             raise HotkeyCollision(chain)
-                        else:
+                        elif character not in base_dict:
                             base_dict[character] = {}
-                            base_dict = base_dict[character]
+                        base_dict = base_dict[character]
             if highlighted:
                 base_dict["end"] = option
 
@@ -82,8 +84,6 @@ class HotFuzz(QMainWindow):
         self.mode_label = QLabel(self)
         self.mode_label.setFont(font)
         self.mode_label.move(0, 0)
-
-        self.set_mode(Mode.HOT)
 
         self.prompt = QLabel(self)
         self.prompt.setFont(font)
@@ -107,6 +107,8 @@ class HotFuzz(QMainWindow):
         output_y = self.prompt_y + font_metrics.height() * 2
         self.output.move(output_x, output_y)
 
+        self.set_mode(Mode.HOT)
+
         self.prompt_cursor = " "
 
         def blink():
@@ -120,7 +122,6 @@ class HotFuzz(QMainWindow):
         self.blink_timer.timeout.connect(blink)
         self.blink_timer.start(500)
 
-        self.prompt_text = ""
         self.show_results()
 
     def set_mode(self, mode):
@@ -130,6 +131,7 @@ class HotFuzz(QMainWindow):
         elif mode == Mode.HOT:
             self.mode_label.setText("[HOT]")
         self.mode_label.adjustSize()
+        self.redraw_output()
 
     def get_results_fuzz(self, text):
         results = fuzzyfinder(text, self.options_fuzzy, accessor=Option.get_text)
@@ -166,15 +168,14 @@ class HotFuzz(QMainWindow):
         self.prompt.setText("> " + self.prompt_text + self.prompt_cursor)
         self.prompt.adjustSize()
 
-        if self.prompt.width() > self.prompt_x or True:
-            x = (self.screen_size.width() - self.prompt.width()) // 2
-            self.prompt.move(x, self.prompt_y)
-        else:
-            self.prompt.move(self.prompt_x, self.prompt_y)
+        x = (self.screen_size.width() - self.prompt.width()) // 2
+        self.prompt.move(x, self.prompt_y)
 
     def show_results(self):
         self.redraw_prompt()
+        self.redraw_output()
 
+    def redraw_output(self):
         if self.mode == Mode.FUZZ:
             results = self.get_results_fuzz(self.prompt_text)
         elif self.mode == Mode.HOT:
@@ -199,7 +200,7 @@ class HotFuzz(QMainWindow):
     def paintEvent(self, _event) -> None:
         painter = QPainter(self)
         painter.setPen(QColor(0, 0, 0, 0))
-        painter.setBrush(QColor(0, 0, 0, 200))
+        painter.setBrush(QColor(0, 0, 0, 210))
         painter.drawRect(self.rect())
 
     def keyPressEvent(self, event) -> None:
