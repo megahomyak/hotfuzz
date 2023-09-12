@@ -74,25 +74,32 @@ class HotFuzz(QMainWindow):
 
         QFontDatabase.addApplicationFont("Fixedsys.ttf")
         font = lambda size: QFont("Fixedsys Excelsior 3.01", pointSize=size)
-        font_metrics = QFontMetrics(font(30))
+        font_metrics = lambda size: QFontMetrics(font(size))
 
         self.current_mode = QLabel(self)
-        self.current_mode.setFont(font(20))
+        self.current_mode.setFont(font(30))
         self.current_mode.move(0, 0)
         self.current_mode.setText("[MODE]")
+        self.current_mode.adjustSize()
 
         self.prompt = QLabel(self)
         self.prompt.setFont(font(30))
         self.prompt.setStyleSheet("color: #00FF00;")
         self.prompt.setTextFormat(Qt.TextFormat.PlainText)
 
+        self.hint = QLabel(self)
+        self.hint.setFont(font(30))
+        self.hint.move(self.screen_size.width() - self.hint.width(), 0)
+
         self.prompt_y = (self.screen_size.height() - self.prompt.height()) // 10
+        self.prompt_x = self.screen_size.width() // 3
+
+        output_x = self.screen_size.width() // 5
 
         self.output = QLabel(self)
         self.output.setFont(font(30))
 
-        output_x = (self.screen_size.width() - self.output.width()) // 5
-        output_y = self.prompt_y + font_metrics.height() * 3
+        output_y = self.prompt_y + font_metrics(30).height() * 3
         self.output.setText("abc")
         self.output.move(output_x, output_y)
 
@@ -107,15 +114,15 @@ class HotFuzz(QMainWindow):
         pass # TODO
 
     def show_results(self):
-        if self.prompt_text:
-            self.prompt.setText("> " + self.prompt_text)
-        else:
-            self.prompt.setText(">")
+        self.prompt.setText("> " + self.prompt_text)
 
         self.prompt.adjustSize()
-        prompt_x = (self.screen_size.width() - self.prompt.width()) // 2
 
-        self.prompt.move(prompt_x, self.prompt_y)
+        if self.prompt.width() > self.prompt_x:
+            x = (self.screen_size.width() - self.prompt.width()) // 2
+            self.prompt.move(x, self.prompt_y)
+        else:
+            self.prompt.move(self.prompt_x, self.prompt_y)
 
     def paintEvent(self, _event) -> None:
         painter = QPainter(self)
