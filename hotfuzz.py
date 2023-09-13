@@ -89,7 +89,6 @@ class HotFuzz(QMainWindow):
 
         self.prompt = QLabel(self)
         self.prompt.setFont(font)
-        self.prompt.setStyleSheet("color: #00FF00;")
         self.prompt.setTextFormat(Qt.TextFormat.PlainText)
 
         self.hint = QLabel(self)
@@ -190,7 +189,7 @@ class HotFuzz(QMainWindow):
             line = ""
             for part in option.parts:
                 if isinstance(part, HighlightedPart):
-                    line += "<span style='color: #00FF00;'>"
+                    line += "<span style='color: #000000; background-color: #FFFFFF'>"
                     line += html.escape(part.characters)
                     line += "</span>"
                 elif isinstance(part, PlainPart):
