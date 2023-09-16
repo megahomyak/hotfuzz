@@ -21,19 +21,6 @@ class PlainPart:
 
 OptionPart = Union[PlainPart, HighlightedPart]
 
-T = TypeVar("T")
-
-@dataclass
-class Option(Generic[T]):
-    parts: List[OptionPart]
-    payload: T
-
-    def get_text(self):
-        text = ""
-        for part in self.parts:
-            text += part.characters
-        return text
-
 class HotkeyCollision(Exception):
     def __init__(self, chain):
         self.chain = chain
@@ -82,6 +69,13 @@ class HotFuzz(QMainWindow):
         QFontDatabase.addApplicationFont("Fixedsys.ttf")
         font = QFont("Fixedsys Excelsior 3.01", pointSize=30)
         font_metrics = QFontMetrics(font)
+
+        print(font_metrics.averageCharWidth())
+        print(font_metrics.height())
+
+        square_side = min((screen_size.width(), screen_size.height()))
+        self.output_width = square_side // font_metrics.averageCharWidth()
+        self.output_height = square_side // font_metrics.height()
 
         self.mode_label = QLabel(self)
         self.mode_label.setFont(font)
