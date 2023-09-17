@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::lowercase_string::LowercaseChar;
+use crate::lowercase_string::{LowercaseChar, LowercaseString};
 
 pub enum Node<Item> {
     Occupied(Item),
@@ -15,7 +15,7 @@ pub enum CreationError {
     Collision,
 }
 
-impl<'a, Item: crate::item::Item> Hot<Item> {
+impl<'a, Item: crate::item::Item<LowercaseString>> Hot<Item> {
     pub fn new(items: impl Iterator<Item = &'a Item>) -> Result<Self, CreationError> {
         use crate::item::Part;
 
