@@ -1,22 +1,54 @@
-mod filters;
-mod item;
-mod lowercase_string;
+use item::Item;
 
-pub enum Mode {
+mod fuzz;
+mod hot;
+mod item;
+pub mod prompt;
+pub use prompt::Prompt;
+
+enum Mode {
     Hot,
     Fuzz,
 }
 
-pub struct HotFuzz<Item> {
+pub struct HotFuzz<'a> {
+    hot: hot::Hot,
+    fuzz: fuzz::Fuzz,
     mode: Mode,
-    hot: filters::hot::Hot<Item>,
-    fuzz: filters::fuzz::Fuzz<Item>,
+    items: &'a [Item],
 }
 
+#[derive(Debug)]
 pub enum CreationError {
     Collision,
 }
 
-impl<Item> HotFuzz<Item> {
-    pub fn new(mode: Mode, items: impl IntoIterator<Item = Item>) -> Result<Self, CreationError> {}
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Output {
+    Choice(item::Index),
+    Exit,
+}
+
+impl<'a> HotFuzz<'a> {
+    pub fn new(items: &'a [Item]) -> Result<Self, CreationError> {
+        let hot = match hot::Hot::new(items) {
+            Err(error) => {
+                return Err(match error {
+                    hot::CreationError::Collision => CreationError::Collision,
+                })
+            }
+            Ok(hot) => hot,
+        };
+        let fuzz = fuzz::Fuzz::new(items);
+        Ok(Self {
+            items,
+            hot,
+            fuzz,
+            mode: Mode::Hot,
+        })
+    }
+
+    pub fn run(&self, mut prompt: Prompt) -> Output {
+        self.hot
+    }
 }

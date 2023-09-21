@@ -1,10 +1,12 @@
-pub enum Part<Str> {
-    Plain(Str),
-    Highlighted(Str),
+#[derive(Clone, Debug)]
+pub enum Part {
+    Plain { contents: String },
+    Highlighted { contents: String },
 }
 
-pub trait Item<Str> {
-    type Parts: Iterator<Item = Part<Str>>;
-
-    fn parts(&self) -> Self::Parts;
+#[derive(Clone, Debug)]
+pub struct Item {
+    pub parts: Vec<Part>,
 }
+
+pub type Index = usize;
