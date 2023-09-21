@@ -3,8 +3,6 @@ use item::Item;
 mod fuzz;
 mod hot;
 mod item;
-pub mod prompt;
-pub use prompt::Prompt;
 
 enum Mode {
     Hot,
@@ -48,7 +46,5 @@ impl<'a> HotFuzz<'a> {
         })
     }
 
-    pub fn run(&self, mut prompt: Prompt) -> Output {
-        self.hot
-    }
+    pub fn run(&self, mut prompt: String) -> Output {}
 }

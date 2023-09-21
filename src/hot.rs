@@ -15,8 +15,9 @@ pub enum CreationError {
 }
 
 pub enum Output {
-    OneChosen(item::Index),
-    MultipleChosen(item::Index),
+    None,
+    One { item_index: item::Index },
+    Multiple { item_indexes: Vec<item::Index> },
 }
 
 impl Hot {
@@ -45,7 +46,9 @@ impl Hot {
                         },
                     );
                     base = match unsafe { (*base).get_mut(&current_char).unwrap_unchecked() } {
-                        Node::Occupied { item_index: _ } => unsafe { std::hint::unreachable_unchecked() },
+                        Node::Occupied { item_index: _ } => unsafe {
+                            std::hint::unreachable_unchecked()
+                        },
                         Node::Free { base } => base,
                     };
                     previous_char = current_char;
@@ -56,9 +59,35 @@ impl Hot {
     }
 
     pub fn filter(&self, query: &str) -> Output {
-        for char in query.chars() {
-
+        let mut base = &self.base;
+        let mut chars = query.chars();
+        for c in chars {
+            match base.get(&c) {
+                None => return Output::None,
+                Some(node) => match node {
+                    Node::Free { base: next_base } => base = next_base,
+                    Node::Occupied { item_index } => {
+                        if chars.as_str().is_empty() {
+                            return Output::One {
+                                item_index: *item_index,
+                            };
+                        } else {
+                            return Output::None;
+                        }
+                    }
+                },
+            }
         }
-        self.base.get()
+        let mut item_indexes = Vec::new();
+        let mut remaining_bases = Vec::from([base]);
+        while Some(base) = remaining_bases.pop() {
+            for item in base.values() {
+                match item {
+                    Node::Free { base } => remaining_bases.push(base),
+                    Node::Occupied { item_index } => item_indexes.push(*item_index),
+                }
+            }
+        }
+        Output::Multiple { item_indexes }
     }
 }
