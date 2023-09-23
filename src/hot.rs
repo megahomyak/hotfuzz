@@ -29,8 +29,8 @@ impl Hot {
                 .parts
                 .iter()
                 .filter_map(|part| match part {
-                    item::Part::Plain { contents: _ } => None,
-                    item::Part::Highlighted { contents } => Some(contents.chars()),
+                    item::Part::Plain { content: _ } => None,
+                    item::Part::Highlighted { content } => Some(content.chars()),
                 })
                 .flatten();
             if let Some(mut previous_char) = highlighted_chars.next() {

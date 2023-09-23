@@ -1,7 +1,7 @@
 #[derive(Clone, Debug)]
 pub enum Part {
-    Plain { contents: String },
-    Highlighted { contents: String },
+    Plain { content: String },
+    Highlighted { content: String },
 }
 
 #[derive(Clone, Debug)]

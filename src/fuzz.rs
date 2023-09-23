@@ -13,8 +13,8 @@ impl Fuzz {
             let mut item_text = String::new();
             for part in item.parts {
                 item_text.push_str(match part {
-                    item::Part::Highlighted { contents } => &contents,
-                    item::Part::Plain { contents } => &contents,
+                    item::Part::Highlighted { content } => &content,
+                    item::Part::Plain { content } => &content,
                 });
             }
             item_text.shrink_to_fit();
