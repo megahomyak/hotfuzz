@@ -1,4 +1,4 @@
 TEMPLATE = app
 TARGET = hotfuzz
-SOURCES += main.cpp
+SOURCES += hotfuzz.cpp
 QT += widgets
