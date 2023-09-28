@@ -1,4 +1,1 @@
-Makefile
-.qmake.stash
-main.o
-hotfuzz
+**/__pycache__
