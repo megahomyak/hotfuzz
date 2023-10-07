@@ -71,6 +71,13 @@ class Window(QMainWindow):
         self.text.setMinimumSize(width, height)
         self.text.setAlignment(Qt.AlignmentFlag.AlignTop)
 
+        self.ttext = QLabel(self)
+        self.ttext.setFont(font)
+        self.ttext.move(x, y)
+        self.ttext.setStyleSheet("color: red;")
+        self.ttext.setText("abc")
+        self.ttext.setMargin(0)
+
         def blink():
             if self.prompt_cursor == "_":
                 self.prompt_cursor = ""
@@ -91,14 +98,21 @@ class Window(QMainWindow):
         painter.setPen(QColor(0, 0, 0, 0))
         painter.setBrush(QColor(0, 0, 0, 210))
         painter.drawRect(self.rect())
+
         painter.setPen(QColor(255, 0, 0, 0))
         painter.setBrush(QColor(255, 0, 0, 210))
         painter.drawRect(*self.dims)
+
         painter.setPen(QColor(0, 255, 0, 0))
         painter.setBrush(QColor(0, 255, 0, 210))
         font = QFont("Fixedsys Excelsior 3.01", pointSize=30)
         font_metrics = QFontMetrics(font)
         painter.drawRect(self.dims[0], self.dims[1], (self.chars_amount_horizontal - 1) * font_metrics.averageCharWidth(), (self.chars_amount_vertical - 1) * font_metrics.height())
+
+        brect = font_metrics.boundingRect("abc")
+        painter.drawRect(self.dims[0], self.dims[1], brect.width(), brect.height())
+        painter.setPen(QColor(0, 0, 255, 0))
+        painter.setBrush(QColor(0, 0, 255, 210))
 
     def keyPressEvent(self, event) -> None:
         if event.key() == Qt.Key.Key_Escape:
