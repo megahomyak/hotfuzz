@@ -49,7 +49,7 @@ class Window(QMainWindow):
             width = screen_size.width()
             height = int(width * (aspect_ratio ** -1))
 
-        char_width = font_metrics.averageCharWidth()
+        char_width = 20
         char_height = font_metrics.height()
         self.chars_amount_vertical = height // char_height
         self.chars_amount_horizontal = width // char_width
@@ -62,21 +62,12 @@ class Window(QMainWindow):
         x = (screen_size.width() - width) // 2
         y = (screen_size.height() - height) // 2
 
-        self.dims = (x, y, width, height)
-
         self.text = QLabel(self)
         self.text.setFont(font)
         self.text.setTextFormat(Qt.TextFormat.RichText)
         self.text.move(x, y)
         self.text.setMinimumSize(width, height)
         self.text.setAlignment(Qt.AlignmentFlag.AlignTop)
-
-        self.ttext = QLabel(self)
-        self.ttext.setFont(font)
-        self.ttext.move(x, y)
-        self.ttext.setStyleSheet("color: red;")
-        self.ttext.setText("abc")
-        self.ttext.setMargin(0)
 
         def blink():
             if self.prompt_cursor == "_":
@@ -98,21 +89,6 @@ class Window(QMainWindow):
         painter.setPen(QColor(0, 0, 0, 0))
         painter.setBrush(QColor(0, 0, 0, 210))
         painter.drawRect(self.rect())
-
-        painter.setPen(QColor(255, 0, 0, 0))
-        painter.setBrush(QColor(255, 0, 0, 210))
-        painter.drawRect(*self.dims)
-
-        painter.setPen(QColor(0, 255, 0, 0))
-        painter.setBrush(QColor(0, 255, 0, 210))
-        font = QFont("Fixedsys Excelsior 3.01", pointSize=30)
-        font_metrics = QFontMetrics(font)
-        painter.drawRect(self.dims[0], self.dims[1], (self.chars_amount_horizontal - 1) * font_metrics.averageCharWidth(), (self.chars_amount_vertical - 1) * font_metrics.height())
-
-        brect = font_metrics.boundingRect("abc")
-        painter.drawRect(self.dims[0], self.dims[1], brect.width(), brect.height())
-        painter.setPen(QColor(0, 0, 255, 0))
-        painter.setBrush(QColor(0, 0, 255, 210))
 
     def keyPressEvent(self, event) -> None:
         if event.key() == Qt.Key.Key_Escape:
@@ -207,18 +183,10 @@ class Window(QMainWindow):
 
         upper_spaces_amount = self.chars_amount_horizontal - len(mode) - len(matched_records_text)
 
-        font = QFont("Fixedsys Excelsior 3.01", pointSize=30)
-        font_metrics = QFontMetrics(font)
-
-        w = font_metrics.boundingRect(mode + (" " * upper_spaces_amount) + matched_records_text).width()
-        print("|", font_metrics.averageCharWidth(), font_metrics.boundingRectChar("s").width())
-        print(w, font_metrics.averageCharWidth(), font_metrics.averageCharWidth() // w, len(mode + (" " * upper_spaces_amount) + matched_records_text), self.chars_amount_horizontal)
-
         text += mode + ("&nbsp;" * upper_spaces_amount) + matched_records_text
         text += "<br/><br/>"
         text += "&nbsp;>&nbsp;" + self.prompt_text + self.prompt_cursor
         text += "<br/><br/>"
         text += "<br/>".join(results_as_strings)
-        text += "<br/>" + "!" * self.chars_amount_horizontal
 
         self.text.setText(text)
