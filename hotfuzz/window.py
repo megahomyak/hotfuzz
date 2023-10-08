@@ -7,7 +7,7 @@ import re
 from PyQt6.QtCore import QSize, QTimer, Qt
 from PyQt6.QtGui import QColor, QFont, QFontDatabase, QFontMetrics, QPainter
 from hotfuzz.mode import Mode
-from hotfuzz.item import Item
+from hotfuzz.item import Item, ItemIndex
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow
 
 if typing.TYPE_CHECKING:
@@ -26,7 +26,7 @@ class Window(QMainWindow):
     def __init__(self, hotfuzz: "HotFuzz", screen_size: QSize):
         super().__init__()
         self.hotfuzz = hotfuzz
-        self.output: Optional[Item] = None
+        self.output: Optional[ItemIndex] = None
 
         self.setCursor(Qt.CursorShape.BlankCursor)
 
@@ -50,7 +50,7 @@ class Window(QMainWindow):
             height = int(width * (aspect_ratio ** -1))
 
         char_width = 20
-        char_height = font_metrics.height()
+        char_height = 41
         self.chars_amount_vertical = height // char_height
         self.chars_amount_horizontal = width // char_width
         width = self.chars_amount_horizontal * char_width
@@ -80,7 +80,7 @@ class Window(QMainWindow):
         self.blink_timer.timeout.connect(blink)
         self.blink_timer.start(500)
 
-        self.results: List[Item] = None # type: ignore
+        self.results: List[ItemIndex] = None # type: ignore
         self.selection_index = 0
         self.show_results()
 
@@ -167,9 +167,10 @@ class Window(QMainWindow):
         biased_selection_index = self.selection_index - beginning_index
 
         results_as_strings = []
-        for index, item in enumerate(items_view):
+        for view_item_index, item_index in enumerate(items_view):
+            item = self.hotfuzz.items[item_index]
             item = html.escape(item)
-            if index == biased_selection_index:
+            if view_item_index == biased_selection_index:
                 results_as_strings.append(
                     f"&nbsp;&nbsp;<span style='color: #000000; background-color: #FFFFFF'>{item}</span>"
                 )

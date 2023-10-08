@@ -1,12 +1,4 @@
 [[package]]
-name = "fuzzyfinder"
-version = "2.1.0"
-description = "Fuzzy Finder implemented in Python."
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "pyqt6"
 version = "6.5.2"
 description = "Python bindings for the Qt cross platform application toolkit"
@@ -37,13 +29,9 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "0a67ea9f67c00bb2c36b4e175d347b2e656584c01f08fb7754b72e0475d8dc1e"
+content-hash = "d73401bb7e161eb5ee0a9088f58c6a4631dfec71c97272b9c01e036924c5c1bb"
 
 [metadata.files]
-fuzzyfinder = [
-    {file = "fuzzyfinder-2.1.0-py2.py3-none-any.whl", hash = "sha256:aa8223e31bd12fefd3f94c3c46c60b64692594efaa05f5d93e24353e57d57572"},
-    {file = "fuzzyfinder-2.1.0.tar.gz", hash = "sha256:c56d86f110866becad6690c7518f7036c20831c0f82fc87eba8fdb943132f04b"},
-]
 pyqt6 = [
     {file = "PyQt6-6.5.2-cp37-abi3-macosx_10_14_universal2.whl", hash = "sha256:5bad1437eb0c1ae801103b32ef04ef62ef1cce505b448525f60089ce36329b89"},
     {file = "PyQt6-6.5.2-cp37-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:70468cca4537756c714a57fa1baa5beabb9b38775f52f9611f49870705672c55"},

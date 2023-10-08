@@ -6,7 +6,7 @@ from hotfuzz.fuzz import Fuzz
 from .hot import Hot
 from .mode import Mode
 
-from .item import Item
+from .item import Item, ItemIndex
 from .window import Window
 
 app = None
@@ -17,8 +17,9 @@ class HotFuzz:
         self.hot = Hot(items)
         self.fuzz = Fuzz(items)
         self.mode = Mode.HOT
+        self.items = items
 
-    def run(self) -> Optional[Item]:
+    def run(self) -> Optional[ItemIndex]:
         global app
         if app is None:
             app = QApplication([])

@@ -6,4 +6,8 @@ for i in range(100):
     items.append("o" + str(i))
 
 hotfuzz = hotfuzz.HotFuzz(items)
-print(hotfuzz.run())
+result = hotfuzz.run()
+if result is not None:
+    print(items[result])
+else:
+    print(None)
