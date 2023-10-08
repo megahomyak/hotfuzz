@@ -5,9 +5,9 @@ import math
 import re
 
 from PyQt6.QtCore import QSize, QTimer, Qt
-from PyQt6.QtGui import QColor, QFont, QFontDatabase, QFontMetrics, QPainter
+from PyQt6.QtGui import QColor, QFont, QFontDatabase, QPainter
 from hotfuzz.mode import Mode
-from hotfuzz.item import Item, ItemIndex
+from hotfuzz.item import ItemIndex
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow
 
 if typing.TYPE_CHECKING:
@@ -38,7 +38,6 @@ class Window(QMainWindow):
 
         QFontDatabase.addApplicationFont("Fixedsys.ttf")
         font = QFont("Fixedsys Excelsior 3.01", pointSize=30)
-        font_metrics = QFontMetrics(font)
 
         aspect_ratio = 4/3
 
@@ -50,7 +49,7 @@ class Window(QMainWindow):
             height = int(width * (aspect_ratio ** -1))
 
         char_width = 20
-        char_height = 41
+        char_height = 40
         self.chars_amount_vertical = height // char_height
         self.chars_amount_horizontal = width // char_width
         width = self.chars_amount_horizontal * char_width
