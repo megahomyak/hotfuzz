@@ -103,6 +103,8 @@ class Window(QMainWindow):
                 self.show_results()
             except EarlyExit:
                 pass
+        elif event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+            self.finish(self.results[self.selection_index])
         elif event.key() == Qt.Key.Key_Up:
             if self.selection_index != 0:
                 self.selection_index -= 1
@@ -130,6 +132,10 @@ class Window(QMainWindow):
                 except EarlyExit:
                     pass
 
+    def finish(self, output: ItemIndex):
+        self.output = output
+        self.close()
+
     def show_results(self):
         if self.hotfuzz.mode == Mode.FUZZ:
             results = self.hotfuzz.fuzz.search(self.prompt_text)
@@ -140,8 +146,7 @@ class Window(QMainWindow):
             elif isinstance(result, list):
                 results = result
             else:
-                self.output = result
-                self.close()
+                self.finish(result)
                 raise EarlyExit()
         self.selection_index = 0
         self.results = results
