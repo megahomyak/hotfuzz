@@ -48,6 +48,7 @@ class Window(QMainWindow):
             width = screen_size.width()
             height = int(width * (aspect_ratio ** -1))
 
+        # QFontMetrics are broken and return incorrect values for character width and height
         char_width = 20
         char_height = 40
         self.chars_amount_vertical = height // char_height
