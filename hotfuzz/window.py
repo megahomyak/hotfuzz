@@ -69,8 +69,6 @@ class Window(QMainWindow):
         self.text.setMinimumSize(width, height)
         self.text.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.setWindowOpacity(0)
-
         def blink():
             if self.prompt_cursor == "_":
                 self.prompt_cursor = ""
@@ -182,12 +180,19 @@ class Window(QMainWindow):
         for view_item_index, item_index in enumerate(items_view):
             item = self.hotfuzz.items[item_index]
             item = html.escape(item)
+            decorated_item = ""
+            for c in item:
+                if c.isupper():
+                    decorated_item += f"<span style='color: #000000; background-color: #FFFFFF'>{c}</span>"
+                else:
+                    decorated_item += c
+            item = decorated_item
             if view_item_index == biased_selection_index:
                 results_as_strings.append(
-                    f"&nbsp;&nbsp;<span style='color: #000000; background-color: #FFFFFF'>{item}</span>"
+                    f"&nbsp;*&nbsp;{item}"
                 )
             else:
-                results_as_strings.append(f"&nbsp;&nbsp;{item}")
+                results_as_strings.append(f"&nbsp;&nbsp;&nbsp;{item}")
 
         if len(self.results) == 1:
             matched_records_text = "1 record matched"
