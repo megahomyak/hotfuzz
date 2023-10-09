@@ -69,8 +69,6 @@ class Window(QMainWindow):
         self.text.setMinimumSize(width, height)
         self.text.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.setWindowOpacity(0)
-
         def blink():
             if self.prompt_cursor == "_":
                 self.prompt_cursor = ""
@@ -139,10 +137,11 @@ class Window(QMainWindow):
         self.close()
 
     def show_results(self):
-        if self.prompt_text == "" and self.hotfuzz.mode == Mode.HOT:
-            self.setWindowOpacity(0)
-        else:
-            self.setWindowOpacity(1)
+        if self.hotfuzz.initially_invisible:
+            if self.prompt_text == "" and self.hotfuzz.mode == Mode.HOT:
+                self.setWindowOpacity(0)
+            else:
+                self.setWindowOpacity(1)
 
         if self.hotfuzz.mode == Mode.FUZZ:
             results = self.hotfuzz.fuzz.search(self.prompt_text)

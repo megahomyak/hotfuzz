@@ -5,7 +5,7 @@ items = ["abc", "Abc", "BAB", "0123456789012345678901234567890123456789012345678
 for i in range(100):
     items.append("o" + str(i))
 
-hotfuzz = hotfuzz.HotFuzz(items)
+hotfuzz = hotfuzz.HotFuzz(items, initially_invisible=False)
 result = hotfuzz.run()
 if result is not None:
     print(items[result])
