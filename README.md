@@ -2,6 +2,10 @@
 
 HotFuzz is a new way of interaction with a computer. It is quick, convenient and easy to learn. Essentially, it is about picking an item from a list.
 
+## Installation
+
+* `pip install hotfuzz`
+
 ## Features
 
 Two modes: "Hot" and "Fuzz".
