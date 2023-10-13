@@ -39,10 +39,11 @@ And since the big letters are needed to be pressed sequentially, you can use suc
 * The "Hot" mode: type out the big characters in the name of the element you want
 * The "Fuzz" mode: narrow the list by typing out the name of the element you want (imprecisely), then return the wanted element
 * Exit HotFuzz by pressing the "Escape" key (this will indicate that you haven't chosen an item)
+* Be aware that items that cannot be accessed in the "Hot" mode won't be displayed in the "Hot" mode. The "Fuzz" mode is guaranteed to display all items when the input field is empty
 
 ## How to invoke HotFuzz from your program
 
-Create a HotFuzz instance with the items that you need:
+Create a `HotFuzz` instance with the items that you need:
 
 ```python
 from hotfuzz import HotFuzz
@@ -52,7 +53,7 @@ items = ["Some Thing", "Some Other Thing"]
 hotfuzz = HotFuzz(items, initially_invisible=False)
 ```
 
-Then invoke the `.run()` method of the HotFuzz instance to allow the user to interact with HotFuzz and choose an item:
+Then invoke the `.run()` method of the `HotFuzz` instance to allow the user to interact with HotFuzz:
 
 ```python
 result_index = hotfuzz.run()
@@ -68,3 +69,5 @@ else:
 ```
 
 You can change `initially_invisible` to `True` if you want the HotFuzz window to be invisible when the user is in the "Hot" mode and the input field is empty. This can help if in your program the user needs to be looking at something while taking actions.
+
+Be aware that when passing a list of arguments where at least one sequence of big letters matches the beginning of another sequence of big letters (of a different item), a `HotCollision` will be raised (when creating a `HotFuzz` instance) because the item with the longer sequence will be inaccessible, which should not happen.
