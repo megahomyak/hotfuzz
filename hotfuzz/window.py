@@ -104,7 +104,12 @@ class Window(QMainWindow):
             except EarlyExit:
                 pass
         elif event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
-            self.finish(self.results[self.selection_index])
+            try:
+                result = self.results[self.selection_index]
+            except IndexError:
+                pass
+            else:
+                self.finish(result)
         elif event.key() == Qt.Key.Key_Up:
             if self.selection_index != 0:
                 self.selection_index -= 1
