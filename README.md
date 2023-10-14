@@ -2,6 +2,10 @@
 
 HotFuzz is a new way of interaction with a computer. It is quick, convenient and easy to learn. Essentially, it is about picking an item from a list.
 
+* Easy for beginners
+* Efficient for masters
+* Easy to become a master
+
 ## Installation
 
 * `pip install hotfuzz`
