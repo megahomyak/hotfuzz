@@ -3,10 +3,10 @@ import typing
 import html
 import math
 import re
+from enum import Enum, auto
 
 from PyQt6.QtCore import QSize, QTimer, Qt
 from PyQt6.QtGui import QColor, QFont, QFontDatabase, QPainter
-from hotfuzz.mode import Mode
 from hotfuzz.item import ItemIndex
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow
 
@@ -21,11 +21,17 @@ class EarlyExit(Exception):
     pass
 
 
+class Mode(Enum):
+    HOT = auto()
+    FUZZ = auto()
+
+
 class Window(QMainWindow):
 
     def __init__(self, hotfuzz: "HotFuzz", screen_size: QSize):
         super().__init__()
         self.hotfuzz = hotfuzz
+        self.mode = Mode.HOT
         self.output: Optional[ItemIndex] = None
 
         self.setCursor(Qt.CursorShape.BlankCursor)
@@ -78,7 +84,7 @@ class Window(QMainWindow):
 
         self.blink_timer = QTimer(self)
         self.blink_timer.timeout.connect(blink)
-        self.blink_timer.start(500)
+        self.blink_timer.start(5000)
 
         self.results: List[ItemIndex] = None # type: ignore
         self.selection_index = 0
@@ -90,9 +96,14 @@ class Window(QMainWindow):
         painter.setBrush(QColor(0, 0, 0, 210))
         painter.drawRect(self.rect())
 
+    def quit(self):
+        self.blink_timer.stop()
+        QApplication.quit()
+        self.close()
+
     def keyPressEvent(self, event) -> None:
         if event.key() == Qt.Key.Key_Escape:
-            self.close()
+            self.quit()
         elif event.key() == Qt.Key.Key_Backspace:
             modifiers = QApplication.keyboardModifiers()
             if Qt.KeyboardModifier.ControlModifier in modifiers:
@@ -121,16 +132,16 @@ class Window(QMainWindow):
         else:
             character = event.text()
             if character == "/":
-                if self.hotfuzz.mode == Mode.FUZZ:
-                    self.hotfuzz.mode = Mode.HOT
-                elif self.hotfuzz.mode == Mode.HOT:
-                    self.hotfuzz.mode = Mode.FUZZ
+                if self.mode == Mode.FUZZ:
+                    self.mode = Mode.HOT
+                elif self.mode == Mode.HOT:
+                    self.mode = Mode.FUZZ
                 self.prompt_text = ""
                 self.show_results()
             elif character not in ("\n", "\r", ""):
-                if self.hotfuzz.mode == Mode.FUZZ:
+                if self.mode == Mode.FUZZ:
                     self.prompt_text += character
-                elif self.hotfuzz.mode == Mode.HOT:
+                elif self.mode == Mode.HOT:
                     self.prompt_text += character.upper()
                 try:
                     self.show_results()
@@ -139,16 +150,16 @@ class Window(QMainWindow):
 
     def finish(self, output: ItemIndex):
         self.output = output
-        self.close()
+        self.quit()
 
     def show_results(self):
         if self.hotfuzz.initially_invisible:
-            if self.prompt_text == "" and self.hotfuzz.mode == Mode.HOT:
+            if self.prompt_text == "" and self.mode == Mode.HOT:
                 self.setWindowOpacity(0)
             else:
                 self.setWindowOpacity(1)
 
-        if self.hotfuzz.mode == Mode.FUZZ:
+        if self.mode == Mode.FUZZ:
             results = self.hotfuzz.fuzz.search(self.prompt_text)
         else:
             result = self.hotfuzz.hot.search(self.prompt_text)
@@ -166,9 +177,9 @@ class Window(QMainWindow):
     def redraw_text(self):
         text = ""
 
-        if self.hotfuzz.mode == Mode.HOT:
+        if self.mode == Mode.HOT:
             mode = "[HOT]"
-        elif self.hotfuzz.mode == Mode.FUZZ:
+        elif self.mode == Mode.FUZZ:
             mode = "[FUZZ]"
 
         beginning_index = max(
