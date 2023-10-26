@@ -84,7 +84,7 @@ class Window(QMainWindow):
 
         self.blink_timer = QTimer(self)
         self.blink_timer.timeout.connect(blink)
-        self.blink_timer.start(5000)
+        self.blink_timer.start(500)
 
         self.results: List[ItemIndex] = None # type: ignore
         self.selection_index = 0
@@ -96,14 +96,9 @@ class Window(QMainWindow):
         painter.setBrush(QColor(0, 0, 0, 210))
         painter.drawRect(self.rect())
 
-    def quit(self):
-        self.blink_timer.stop()
-        QApplication.quit()
-        self.close()
-
     def keyPressEvent(self, event) -> None:
         if event.key() == Qt.Key.Key_Escape:
-            self.quit()
+            self.close()
         elif event.key() == Qt.Key.Key_Backspace:
             modifiers = QApplication.keyboardModifiers()
             if Qt.KeyboardModifier.ControlModifier in modifiers:
@@ -150,7 +145,7 @@ class Window(QMainWindow):
 
     def finish(self, output: ItemIndex):
         self.output = output
-        self.quit()
+        self.close()
 
     def show_results(self):
         if self.hotfuzz.initially_invisible:
